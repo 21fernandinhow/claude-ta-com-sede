@@ -1,0 +1,5 @@
+{
+  "name": "claude-ta-com-sede",
+  "owner": { "name": "21fernandinhow" },
+  "plugins": [{ "name": "claude-ta-com-sede", "source": "./" }]
+}
