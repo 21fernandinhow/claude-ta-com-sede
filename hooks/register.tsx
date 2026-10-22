@@ -1,4 +1,4 @@
-import type { Register, TurnUsage } from 'claude-code'
+import type { EngineInterface, Register, TurnUsage } from 'claude-code'
 
 import type { Dia } from '../types'
 
@@ -31,12 +31,22 @@ const dataDe = (ms: number) => {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
 
+// O store é um só para todas as sessões; cada sessão copia dele o total do dia.
+const sincronizar = async ($: EngineInterface) => {
+  const salvo = (await $.store.get('hoje')) as Dia | undefined
+  const data = dataDe(await $.clock.now())
+  const dia: Dia = salvo?.data === data ? salvo : { data, ml: 0 }
+  const { value: atual } = await $.state.get(HOJE)
+  if (atual?.data !== dia.data || atual.ml !== dia.ml) {
+    await $.state.set(HOJE, dia)
+  }
+}
+
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
-    const salvo = (await $.store.get('hoje')) as Dia | undefined
-    const data = dataDe(await $.clock.now())
-    const dia: Dia = salvo?.data === data ? salvo : { data, ml: 0 }
-    await $.state.set(HOJE, dia)
+    await sincronizar($)
+    // Pega o que outras sessões somaram enquanto esta está parada.
+    $.clock.every(10000, () => sincronizar($))
     await $.command.register({ name: 'agua', description: 'Mostra/esconde o contador de água do dia' })
 
     return next(e)
@@ -64,6 +74,7 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'agua' }, async $ => {
+    await sincronizar($)
     const { value: dia } = await $.state.get(HOJE)
     const { value: isHidden = false } = await $.state.get(IS_HIDDEN)
     await $.state.set(IS_HIDDEN, !isHidden)

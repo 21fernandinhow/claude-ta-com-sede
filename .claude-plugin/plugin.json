@@ -1,1 +1,1 @@
-{ "name": "claude-ta-com-sede", "version": "0.1.0", "description": "Mostra (de brincadeira) quanta água você já gastou hoje com o Claude", "types": "./types/index.d.ts" }
+{ "name": "claude-ta-com-sede", "version": "0.1.1", "description": "Mostra (de brincadeira) quanta água você já gastou hoje com o Claude", "types": "./types/index.d.ts" }
