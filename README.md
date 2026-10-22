@@ -29,4 +29,11 @@ Num shell:
 claude plugin install claude-ta-com-sede --marketplace 21fernandinhow/claude-ta-com-sede
 ```
 
+Versões antigas da CLI não têm a opção `--marketplace`. Nelas, instale em dois passos:
+
+```bash
+claude plugin marketplace add 21fernandinhow/claude-ta-com-sede
+claude plugin install claude-ta-com-sede@claude-ta-com-sede
+```
+
 No app desktop, onde `/plugin` não funciona: clique em **+** ao lado da caixa de prompt, depois **Plugins**, **Add marketplace** com `21fernandinhow/claude-ta-com-sede`, e então **Add plugin**.
